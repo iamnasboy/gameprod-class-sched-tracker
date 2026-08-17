@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upcoming Class Games Gantt</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Class Games Usage</p>
+          <h1>Upcoming Classes & Assigned Games</h1>
+        </div>
+        <div class="summary" aria-label="Filtered summary">
+          <div>
+            <span id="summaryLessons">0</span>
+            <small>lessons</small>
+          </div>
+          <div>
+            <span id="summaryMissing">0</span>
+            <small>missing games</small>
+          </div>
+          <div>
+            <span id="summaryUrgent">0</span>
+            <small>urgent</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="Filters">
+        <div class="segmented" role="tablist" aria-label="Subject">
+          <button class="active" data-subject="Math" type="button">Math</button>
+          <button data-subject="Science" type="button">Science</button>
+        </div>
+        <div class="weekWindow" aria-label="Timeline window">7-day view from today</div>
+        <label class="toggle">
+          <input id="missingOnly" type="checkbox" />
+          Missing only
+        </label>
+      </section>
+
+      <section class="legend" aria-label="Legend">
+        <span><i class="done"></i>Ready</span>
+        <span><i class="pending"></i>In production / pending</span>
+        <span><i class="missing"></i>No game specified</span>
+        <span><i class="today"></i>Today marker</span>
+      </section>
+
+      <section class="chartPanel" aria-label="Gantt chart">
+        <div id="gantt" class="gantt"></div>
+      </section>
+
+      <section class="tablePanel" aria-label="Visible lesson details">
+        <div class="tableHeader">
+          <h2>Visible Lessons</h2>
+          <p id="tableNote"></p>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Level</th>
+                <th>Week</th>
+                <th>Topic</th>
+                <th>Game</th>
+                <th>Status</th>
+                <th>Classes</th>
+              </tr>
+            </thead>
+            <tbody id="lessonRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
