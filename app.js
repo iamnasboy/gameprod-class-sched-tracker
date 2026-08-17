@@ -119,6 +119,7 @@
       `<div class="ticks">${ticks.join("")}</div>`,
       "</div>",
       '<div class="levelBlock">',
+      `<div class="todayColumn" style="left:${112}px;width:${DAY_WIDTH}px" aria-hidden="true"></div>`,
       `<div class="todayLine" style="left:${112}px" title="Today"></div>`,
     ];
 
@@ -155,17 +156,15 @@
 
   function renderTable(rows) {
     els.tableNote.textContent = `${state.subject}, ${formatShortDate(TODAY)}-${formatShortDate(new Date(TODAY.getTime() + (WINDOW_DAYS - 1) * DAY))}`;
-    els.rows.innerHTML = rows
+    const gameRows = [...rows].sort((a, b) => a.date - b.date || a.level.localeCompare(b.level) || a.week - b.week);
+    els.rows.innerHTML = gameRows
       .map(
         (row) => `
         <tr>
           <td>${formatDate(row.date)}</td>
-          <td>${row.level}</td>
-          <td>W${row.week}</td>
-          <td><strong>${escapeHtml(row.topic || "No topic row found")}</strong><br><span class="muted">${escapeHtml(row.concepts || "")}</span></td>
-          <td>${escapeHtml(row.game)}</td>
+          <td><strong>${row.level}</strong><br><span class="muted">W${row.week}</span></td>
+          <td><strong>${escapeHtml(row.game)}</strong><br><span class="muted">${escapeHtml(row.topic || "No topic row found")}</span></td>
           <td><span class="statusPill ${row.status}">${escapeHtml(row.statusLabel)}</span><br><span class="muted">${escapeHtml(row.assignmentSource || "")}</span></td>
-          <td>${row.upcomingClasses}</td>
         </tr>`,
       )
       .join("");

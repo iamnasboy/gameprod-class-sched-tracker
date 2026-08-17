@@ -379,6 +379,17 @@ select {
   z-index: 4;
 }
 
+.todayColumn {
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  background: rgb(214 232 255 / 42%);
+  border-left: 1px solid rgb(92 145 214 / 28%);
+  border-right: 1px solid rgb(92 145 214 / 28%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .empty {
   padding: 32px;
   color: var(--muted);
