@@ -110,7 +110,7 @@
     const ticks = [];
     for (let day = 0; day <= chartDays; day += 1) {
       const date = new Date(TODAY.getTime() + day * DAY);
-      ticks.push(`<div class="tick" style="left:${day * DAY_WIDTH}px">${formatDayTick(date)}</div>`);
+      ticks.push(`<div class="tick${day === 0 ? " todayTick" : ""}" style="left:${day * DAY_WIDTH}px">${formatDayTick(date)}</div>`);
     }
 
     const html = [
@@ -119,7 +119,6 @@
       `<div class="ticks">${ticks.join("")}</div>`,
       "</div>",
       '<div class="levelBlock">',
-      `<div class="todayColumn" style="left:${112}px;width:${DAY_WIDTH}px" aria-hidden="true"></div>`,
       `<div class="todayLine" style="left:${112}px" title="Today"></div>`,
     ];
 
@@ -145,7 +144,7 @@
       html.push(
         `<div class="row" style="min-height:${rowHeight}px">`,
         `<div class="rowLabel levelRow"><strong>${level}</strong><span>${levelRows.length || "No"} item${levelRows.length === 1 ? "" : "s"}</span></div>`,
-        `<div class="track" style="min-height:${rowHeight}px">${bars}</div>`,
+        `<div class="track" style="min-height:${rowHeight}px"><div class="todayCell" aria-hidden="true"></div>${bars}</div>`,
         "</div>",
       );
     });
