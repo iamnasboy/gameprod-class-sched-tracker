@@ -28,6 +28,7 @@
       date,
       daysUntil: daysBetween(TODAY, date),
       game,
+      displayGame: displayGameName(game),
       status,
       statusLabel: getStatusLabel(status, item),
     };
@@ -48,6 +49,12 @@
 
   function clean(value) {
     return String(value || "").trim();
+  }
+
+  function displayGameName(game) {
+    const text = clean(game);
+    if (text === "No game specified") return text;
+    return text.replace(/^(Math|Science)-P[1-6]-/i, "");
   }
 
   function parseLocalDate(value) {
@@ -136,8 +143,8 @@
           const top = 7 + lane * 52;
           const width = DAY_WIDTH - 12;
           const title = `${row.level} W${row.week}: ${row.topic || "Untitled topic"} | ${row.game}`;
-          const topicLine = `W${row.week}${row.topic ? ` - ${row.topic}` : ""}`;
-          return `<button class="bar ${row.status}" style="left:${left}px;top:${top}px;width:${width}px" title="${escapeAttr(title)}"><span class="barTopic">${escapeHtml(topicLine)}</span><span class="barGame">${escapeHtml(row.game)}</span></button>`;
+          const topicLine = `${formatTime(row.date)} - W${row.week}${row.topic ? ` - ${row.topic}` : ""}`;
+          return `<button class="bar ${row.status}" style="left:${left}px;top:${top}px;width:${width}px" title="${escapeAttr(title)}"><span class="barTopic">${escapeHtml(topicLine)}</span><span class="barGame">${escapeHtml(row.displayGame)}</span></button>`;
         })
         .join("");
 
@@ -160,9 +167,9 @@
       .map(
         (row) => `
         <tr>
-          <td>${formatDate(row.date)}</td>
+          <td>${formatDate(row.date)}<br><span class="muted">${formatTime(row.date)}</span></td>
           <td><strong>${row.level}</strong><br><span class="muted">W${row.week}</span></td>
-          <td><strong>${escapeHtml(row.game)}</strong><br><span class="muted">${escapeHtml(row.topic || "No topic row found")}</span></td>
+          <td><strong>${escapeHtml(row.displayGame)}</strong><br><span class="muted">${escapeHtml(row.topic || "No topic row found")}</span></td>
           <td><span class="statusPill ${row.status}">${escapeHtml(row.statusLabel)}</span><br><span class="muted">${escapeHtml(row.assignmentSource || "")}</span></td>
         </tr>`,
       )
@@ -179,6 +186,10 @@
 
   function formatDate(date) {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function formatTime(date) {
+    return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   }
 
   function escapeHtml(value) {
