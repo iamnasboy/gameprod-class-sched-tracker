@@ -104,9 +104,9 @@ h2 {
 }
 
 .controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(360px, 1fr) auto;
   align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
   padding: 12px;
   margin-bottom: 10px;
@@ -152,6 +152,13 @@ h2 {
   font-size: 14px;
 }
 
+.weekNav {
+  display: inline-flex;
+  align-items: center;
+  justify-self: center;
+  gap: 8px;
+}
+
 .weekWindow {
   min-height: 36px;
   border: 1px solid var(--line);
@@ -160,6 +167,41 @@ h2 {
   padding: 0 12px;
   color: var(--ink);
   font-weight: 700;
+  min-width: 310px;
+  justify-content: center;
+  text-align: center;
+}
+
+.weekNav button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.weekNav .navArrow {
+  width: 38px;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.weekNav .todayButton {
+  font-weight: 700;
+}
+
+.weekNav button:hover:not(:disabled) {
+  border-color: #b9c5cb;
+  background: #f4f7f8;
+}
+
+.weekNav button:disabled {
+  color: var(--muted);
+  cursor: default;
+  opacity: 0.55;
 }
 
 select {
@@ -172,7 +214,8 @@ select {
 }
 
 .toggle {
-  margin-left: auto;
+  justify-self: end;
+  margin-left: 0;
   color: var(--ink);
 }
 
@@ -498,16 +541,33 @@ th {
   }
 
   .controls {
+    grid-template-columns: 1fr;
     align-items: stretch;
   }
 
   .toggle {
-    margin-left: 0;
+    justify-self: start;
   }
 
   .segmented,
-  .chips {
+  .chips,
+  .weekNav {
     width: 100%;
+  }
+
+  .weekNav {
+    display: grid;
+    grid-template-columns: 1fr 44px 44px;
+  }
+
+  .weekWindow {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .weekNav button {
+    grid-row: 2;
   }
 
   .segmented button,

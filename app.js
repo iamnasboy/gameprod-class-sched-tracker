@@ -7,6 +7,7 @@
   const state = {
     subject: "Math",
     missingOnly: false,
+    windowStart: new Date(TODAY),
   };
 
   const els = {
@@ -17,6 +18,10 @@
     summaryMissing: document.getElementById("summaryMissing"),
     summaryUrgent: document.getElementById("summaryUrgent"),
     tableNote: document.getElementById("tableNote"),
+    weekWindow: document.getElementById("weekWindow"),
+    prevWeek: document.getElementById("prevWeek"),
+    todayWeek: document.getElementById("todayWeek"),
+    nextWeek: document.getElementById("nextWeek"),
   };
 
   const data = (window.CLASS_GAMES || []).map((item) => {
@@ -45,6 +50,19 @@
   els.missingOnly.addEventListener("change", () => {
     state.missingOnly = els.missingOnly.checked;
     render();
+  });
+
+  els.prevWeek.addEventListener("click", () => {
+    shiftWindow(-WINDOW_DAYS);
+  });
+
+  els.todayWeek.addEventListener("click", () => {
+    state.windowStart = new Date(TODAY);
+    render();
+  });
+
+  els.nextWeek.addEventListener("click", () => {
+    shiftWindow(WINDOW_DAYS);
   });
 
   function clean(value) {
@@ -87,10 +105,29 @@
     return clean(item.prodStatuses) || "Assigned, no production row";
   }
 
+  function shiftWindow(days) {
+    state.windowStart = new Date(state.windowStart.getTime() + days * DAY);
+    render();
+  }
+
+  function windowEnd() {
+    return new Date(state.windowStart.getTime() + (WINDOW_DAYS - 1) * DAY);
+  }
+
+  function daysFromWindowStart(date) {
+    return daysBetween(state.windowStart, date);
+  }
+
+  function isTodayInWindow() {
+    const todayOffset = daysBetween(state.windowStart, TODAY);
+    return todayOffset >= 0 && todayOffset < WINDOW_DAYS;
+  }
+
   function filteredRows() {
     return data
       .filter((item) => item.subject === state.subject)
-      .filter((item) => item.daysUntil >= 0 && item.daysUntil < WINDOW_DAYS)
+      .map((item) => ({ ...item, windowDay: daysFromWindowStart(item.date) }))
+      .filter((item) => item.windowDay >= 0 && item.windowDay < WINDOW_DAYS)
       .filter((item) => !state.missingOnly || item.status === "missing")
       .sort((a, b) => a.level.localeCompare(b.level) || a.date - b.date || a.week - b.week);
   }
@@ -103,9 +140,25 @@
     els.gantt.style.setProperty("--chartWidth", `${chartWidth}px`);
     els.summaryLessons.textContent = rows.length;
     els.summaryMissing.textContent = rows.filter((r) => r.status === "missing").length;
-    els.summaryUrgent.textContent = rows.filter((r) => r.status === "missing" && r.daysUntil <= 7).length;
+    els.summaryUrgent.textContent = rows.filter((r) => r.status === "missing" && r.daysUntil >= 0 && r.daysUntil <= 7).length;
+    renderWindowLabel();
     renderGantt(rows, chartDays);
     renderTable(rows);
+  }
+
+  function renderWindowLabel() {
+    const offset = daysBetween(TODAY, state.windowStart);
+    const range = `${formatShortDate(state.windowStart)}-${formatShortDate(windowEnd())}`;
+    let label = range;
+    if (offset === 0) {
+      label = `7-day view from today | ${range}`;
+    } else if (offset > 0) {
+      label = `${range} | ${offset} day${offset === 1 ? "" : "s"} ahead`;
+    } else {
+      label = `${range} | ${Math.abs(offset)} day${offset === -1 ? "" : "s"} ago`;
+    }
+    els.weekWindow.textContent = label;
+    els.todayWeek.disabled = offset === 0;
   }
 
   function renderGantt(rows, chartDays) {
@@ -115,9 +168,10 @@
     }
 
     const ticks = [];
+    const todayOffset = daysBetween(state.windowStart, TODAY);
     for (let day = 0; day <= chartDays; day += 1) {
-      const date = new Date(TODAY.getTime() + day * DAY);
-      ticks.push(`<div class="tick${day === 0 ? " todayTick" : ""}" style="left:${day * DAY_WIDTH}px">${formatDayTick(date)}</div>`);
+      const date = new Date(state.windowStart.getTime() + day * DAY);
+      ticks.push(`<div class="tick${day === todayOffset ? " todayTick" : ""}" style="left:${day * DAY_WIDTH}px">${formatDayTick(date)}</div>`);
     }
 
     const html = [
@@ -126,20 +180,20 @@
       `<div class="ticks">${ticks.join("")}</div>`,
       "</div>",
       '<div class="levelBlock">',
-      `<div class="todayLine" style="left:${112}px" title="Today"></div>`,
+      isTodayInWindow() ? `<div class="todayLine" style="left:${112 + todayOffset * DAY_WIDTH}px" title="Today"></div>` : "",
     ];
 
     levels.forEach((level) => {
       const levelRows = rows.filter((row) => row.level === level);
       const laneCounts = new Map();
-      levelRows.forEach((row) => laneCounts.set(row.daysUntil, (laneCounts.get(row.daysUntil) || 0) + 1));
+      levelRows.forEach((row) => laneCounts.set(row.windowDay, (laneCounts.get(row.windowDay) || 0) + 1));
       const rowHeight = Math.max(62, Math.max(1, ...laneCounts.values()) * 52 + 14);
       const laneByDay = new Map();
       const bars = levelRows
         .map((row) => {
-          const lane = laneByDay.get(row.daysUntil) || 0;
-          laneByDay.set(row.daysUntil, lane + 1);
-          const left = Math.max(0, row.daysUntil) * DAY_WIDTH + 6;
+          const lane = laneByDay.get(row.windowDay) || 0;
+          laneByDay.set(row.windowDay, lane + 1);
+          const left = Math.max(0, row.windowDay) * DAY_WIDTH + 6;
           const top = 7 + lane * 52;
           const width = DAY_WIDTH - 12;
           const title = `${row.level} W${row.week}: ${row.topic || "Untitled topic"} | ${row.game}`;
@@ -151,7 +205,7 @@
       html.push(
         `<div class="row" style="min-height:${rowHeight}px">`,
         `<div class="rowLabel levelRow"><strong>${level}</strong><span>${levelRows.length || "No"} item${levelRows.length === 1 ? "" : "s"}</span></div>`,
-        `<div class="track" style="min-height:${rowHeight}px"><div class="todayCell" aria-hidden="true"></div>${bars}</div>`,
+        `<div class="track" style="min-height:${rowHeight}px">${isTodayInWindow() ? `<div class="todayCell" style="left:${todayOffset * DAY_WIDTH}px" aria-hidden="true"></div>` : ""}${bars}</div>`,
         "</div>",
       );
     });
@@ -161,7 +215,7 @@
   }
 
   function renderTable(rows) {
-    els.tableNote.textContent = `${state.subject}, ${formatShortDate(TODAY)}-${formatShortDate(new Date(TODAY.getTime() + (WINDOW_DAYS - 1) * DAY))}`;
+    els.tableNote.textContent = `${state.subject}, ${formatShortDate(state.windowStart)}-${formatShortDate(windowEnd())}`;
     const gameRows = [...rows].sort((a, b) => a.date - b.date || a.level.localeCompare(b.level) || a.week - b.week);
     els.rows.innerHTML = gameRows
       .map(

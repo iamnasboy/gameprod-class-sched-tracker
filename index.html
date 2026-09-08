@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Upcoming Class Games Gantt</title>
-    <link rel="stylesheet" href="styles.css?v=2026-08-18-prefix-cleanup" />
+    <link rel="stylesheet" href="styles.css?v=2026-09-07-week-nav" />
   </head>
   <body>
     <main class="shell">
@@ -34,7 +34,12 @@
           <button class="active" data-subject="Math" type="button">Math</button>
           <button data-subject="Science" type="button">Science</button>
         </div>
-        <div class="weekWindow" aria-label="Timeline window">7-day view from today</div>
+        <div class="weekNav" aria-label="Timeline window">
+          <button id="todayWeek" class="todayButton" type="button">Today</button>
+          <button id="prevWeek" class="navArrow" type="button" aria-label="Previous 7 days" title="Previous 7 days">‹</button>
+          <div id="weekWindow" class="weekWindow">7-day view from today</div>
+          <button id="nextWeek" class="navArrow" type="button" aria-label="Next 7 days" title="Next 7 days">›</button>
+        </div>
         <label class="toggle">
           <input id="missingOnly" type="checkbox" />
           Missing only
@@ -73,7 +78,7 @@
       </section>
     </main>
 
-    <script src="data.js?v=2026-08-18-prefix-cleanup"></script>
-    <script src="app.js?v=2026-08-18-prefix-cleanup"></script>
+    <script src="data.js?v=2026-09-07-week-nav"></script>
+    <script src="app.js?v=2026-09-07-week-nav"></script>
   </body>
 </html>
