@@ -1,17 +1,20 @@
 :root {
   color-scheme: light;
-  --bg: #f6f7f8;
-  --ink: #172026;
-  --muted: #69747d;
-  --line: #dfe4e7;
+  --bg: #eef3f6;
+  --ink: #10202b;
+  --muted: #61717c;
+  --line: #d7e0e5;
   --panel: #ffffff;
+  --panel-soft: #f8fbfc;
   --math: #2f6f73;
   --science: #806332;
   --ready: #2f7d50;
   --pending: #c77a22;
   --missing: #bd3d35;
-  --today: #253047;
-  --soft: #eef2f3;
+  --today: #204b73;
+  --soft: #edf4f6;
+  --shadow: 0 10px 28px rgb(18 38 50 / 8%);
+  --shadow-soft: 0 2px 10px rgb(18 38 50 / 7%);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -21,7 +24,9 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    linear-gradient(180deg, #dfeaf0 0, var(--bg) 220px),
+    var(--bg);
   color: var(--ink);
 }
 
@@ -34,15 +39,15 @@ input {
 .shell {
   width: min(1500px, calc(100vw - 32px));
   margin: 0 auto;
-  padding: 24px 0 36px;
+  padding: 22px 0 36px;
 }
 
 .topbar {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .eyebrow {
@@ -61,8 +66,8 @@ h2 {
 }
 
 h1 {
-  font-size: clamp(28px, 4vw, 46px);
-  line-height: 1.02;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1;
 }
 
 h2 {
@@ -79,7 +84,8 @@ h2 {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 12px 14px;
+  padding: 13px 15px;
+  box-shadow: var(--shadow-soft);
 }
 
 .summary span {
@@ -92,6 +98,7 @@ h2 {
 .summary small {
   color: var(--muted);
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .controls,
@@ -101,6 +108,7 @@ h2 {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
+  box-shadow: var(--shadow-soft);
 }
 
 .controls {
@@ -108,7 +116,7 @@ h2 {
   grid-template-columns: auto minmax(360px, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 14px;
   margin-bottom: 10px;
 }
 
@@ -125,13 +133,14 @@ h2 {
   background: #fff;
   color: var(--muted);
   border-radius: 8px;
-  padding: 0 14px;
+  padding: 0 16px;
   cursor: pointer;
+  font-weight: 650;
 }
 
 .segmented button.active {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: #102b3a;
+  border-color: #102b3a;
   color: #fff;
 }
 
@@ -163,29 +172,30 @@ h2 {
   min-height: 36px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafb;
+  background: var(--panel-soft);
   padding: 0 12px;
   color: var(--ink);
   font-weight: 700;
-  min-width: 310px;
+  min-width: 340px;
   justify-content: center;
   text-align: center;
 }
 
 .weekNav button {
   min-height: 36px;
-  border: 1px solid var(--line);
+  border: 1px solid #cbd8de;
   border-radius: 8px;
   background: #fff;
   color: var(--ink);
   padding: 0 12px;
   cursor: pointer;
+  box-shadow: 0 1px 1px rgb(18 38 50 / 6%);
 }
 
 .weekNav .navArrow {
   width: 38px;
   padding: 0;
-  font-size: 24px;
+  font-size: 25px;
   line-height: 1;
 }
 
@@ -223,7 +233,7 @@ select {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   margin-bottom: 10px;
   color: var(--muted);
   font-size: 13px;
@@ -271,26 +281,29 @@ select {
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
-    linear-gradient(#fff, #fff) padding-box,
-    repeating-linear-gradient(90deg, #eef1f2 0, #eef1f2 1px, transparent 1px, transparent var(--dayWidth));
+    linear-gradient(180deg, #fff 0, #fbfdfe 100%) padding-box,
+    repeating-linear-gradient(90deg, #edf2f4 0, #edf2f4 1px, transparent 1px, transparent var(--dayWidth));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 80%);
 }
 
 .timeline {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 8;
   display: grid;
   grid-template-columns: 112px 1fr;
   min-width: var(--chartWidth);
-  background: #fff;
+  background: #f9fcfd;
   border-bottom: 1px solid var(--line);
 }
 
 .timelineCorner {
-  padding: 10px 12px;
+  padding: 11px 12px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
+  background: #f9fcfd;
+  border-right: 1px solid var(--line);
 }
 
 .ticks {
@@ -303,7 +316,7 @@ select {
   top: 0;
   height: 40px;
   border-left: 1px solid var(--line);
-  padding: 9px 0 0 6px;
+  padding: 10px 0 0 8px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
@@ -311,9 +324,10 @@ select {
 }
 
 .tick.todayTick {
-  background: #eaf4ff;
-  border-left-color: #7da9d8;
-  border-right: 1px solid #b7d3ef;
+  background: #e8f4ff;
+  color: var(--today);
+  border-left-color: #8cbce8;
+  border-right: 1px solid #c2dcf3;
 }
 
 .levelBlock {
@@ -327,20 +341,24 @@ select {
   display: grid;
   grid-template-columns: 112px 1fr;
   min-height: 58px;
-  border-bottom: 1px solid #edf0f2;
+  border-bottom: 1px solid #e9eef1;
+}
+
+.row:nth-child(even) .track {
+  background: rgb(248 251 252 / 72%);
 }
 
 .rowLabel {
   position: sticky;
   left: 0;
-  z-index: 2;
+  z-index: 6;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 3px;
-  padding: 8px 10px;
-  background: #fff;
+  padding: 10px 12px;
+  background: #fbfdfe;
   border-right: 1px solid var(--line);
   color: var(--muted);
   font-size: 12px;
@@ -351,7 +369,7 @@ select {
 }
 
 .rowLabel.levelRow strong {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -369,7 +387,7 @@ select {
   position: absolute;
   inset: 0 auto 0 0;
   width: var(--dayWidth);
-  background: #eaf4ff;
+  background: linear-gradient(180deg, rgb(232 244 255 / 72%), rgb(232 244 255 / 42%));
   border-left: 1px solid #7da9d8;
   border-right: 1px solid #b7d3ef;
   pointer-events: none;
@@ -383,28 +401,34 @@ select {
   height: 44px;
   border-radius: 6px;
   border: 1px solid transparent;
-  padding: 6px 9px;
+  padding: 6px 10px;
   color: #162028;
   font-size: 12px;
   text-align: left;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 7px rgb(18 38 50 / 12%);
   cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.bar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgb(18 38 50 / 16%);
 }
 
 .bar.ready {
-  background: #e5f3ea;
-  border-color: #9bc7aa;
+  background: #eaf6ef;
+  border-color: #8ec49e;
 }
 
 .bar.pending {
-  background: #fff0dd;
-  border-color: #e1ad70;
+  background: #fff3df;
+  border-color: #dfa35c;
 }
 
 .bar.missing {
-  background: #fde7e5;
-  border-color: #df938d;
+  background: #feeceb;
+  border-color: #e18881;
 }
 
 .bar:focus {
@@ -424,6 +448,7 @@ select {
   color: #52616b;
   font-size: 11px;
   font-weight: 700;
+  line-height: 1.1;
 }
 
 .barGame {
@@ -439,8 +464,8 @@ select {
   bottom: 0;
   width: 3px;
   background: var(--today);
-  opacity: 0.85;
-  z-index: 4;
+  opacity: 0.7;
+  z-index: 5;
 }
 
 
@@ -459,8 +484,9 @@ select {
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 16px;
+  padding: 15px 16px;
   border-bottom: 1px solid var(--line);
+  background: #fbfdfe;
 }
 
 .tableHeader p {
@@ -482,21 +508,29 @@ table {
 
 th,
 td {
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid #edf0f2;
   text-align: left;
   vertical-align: top;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 th {
   position: sticky;
   top: 0;
-  z-index: 1;
-  background: #f8fafb;
+  z-index: 2;
+  background: #f5f9fb;
   color: var(--muted);
   font-size: 12px;
   text-transform: uppercase;
+}
+
+tbody tr:nth-child(even) {
+  background: #fbfdfe;
+}
+
+tbody tr:hover {
+  background: #f3f8fa;
 }
 
 .statusPill {
@@ -504,7 +538,7 @@ th {
   align-items: center;
   min-height: 24px;
   border-radius: 999px;
-  padding: 0 9px;
+  padding: 0 10px;
   color: #fff;
   font-size: 12px;
   font-weight: 800;
